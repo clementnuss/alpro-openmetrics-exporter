@@ -1,0 +1,8 @@
+**.db
+**.sql
+**.mdb
+**.aph
+**.apw
+**.ldb
+restore/
+**/.DS_store
