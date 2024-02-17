@@ -1,4 +1,4 @@
-# Alpro VictoriaMetrics exporter
+# Alpro OpenMetrics exporter
 
 This repository contains example Python3 code permitting to collect key
 measurements from a DeLaval ALPRO™ database, and to push those measurements to
@@ -220,3 +220,11 @@ for snapshot in $SNAPSHOTS; do
     python3 alpro-to-openmetrics.py --history
 done
 ```
+
+## Visualizing the data in Grafana
+
+Finally, we can visualize our production data with Grafana, and the dashboard
+looks as follows:
+
+![grafana dashboard](./docs/grafana-dashboard.png)
+
