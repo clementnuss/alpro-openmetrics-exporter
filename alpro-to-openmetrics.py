@@ -17,6 +17,11 @@ parser.add_argument(
     help="imports historical data until yesterday",
     default=False,
 )
+parser.add_argument(
+    "--url",
+    help="prometheus endpoint",
+    default="http://vmagent-vmagent:8429/insert/2900/prometheus/api/v1/import/prometheus",
+)
 # args = parser.parse_args("--filename ./alpro.db --daily".split(" "))
 args = parser.parse_args()
 
@@ -41,7 +46,7 @@ def convert_to_openmetrics(row: pd.Series, metric_name: str):
 
 # %%
 # Read sqlite query results into a pandas DataFrame
-con = sqlite3.connect("./alpro.db")
+con = sqlite3.connect(args.filename)
 dates_fmt = {"MilkDateTime": "%Y-%m-%d %H:%M:%S", "RecDate": "%Y-%m-%d %H:%M:%S"}
 
 cow_detail = pd.read_sql_query("SELECT * from TblCow", con)
@@ -168,15 +173,11 @@ if args.daily:
         TblCow = TblCow.drop(columns=["session", "timestamp"])
 
 # %%
-# url = "http://vmagent-vmagent:8429/insert/2900/prometheus/api/v1/import/prometheus"
-
 if len(metrics) > 0:
     print(metrics[0])
-    url = "http://vmagent-vmagent:8429/insert/2900/prometheus/api/v1/import/prometheus"
     requests.post(
-        f"{url}/?extra_label=retention_period=long-term&extra_label=job=milk_data_v1.0.1",
+        f"{args.url}/?extra_label=retention_period=long-term&extra_label=job=milk_data_v1.0.1",
         data=metrics[0].str.cat(sep="\n"),
     )
-
 # %%
 con.close()  # close sqlite DB
